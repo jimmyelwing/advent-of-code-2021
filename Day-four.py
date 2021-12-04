@@ -1,6 +1,7 @@
 def main():
-    boardInputs = open("inputs/day-four-inputs-bingo-boards.txt", "r").read().split("\n")
-    drawnNumbersInput = open("inputs/day-four-inputs-drawn-numbers.txt", "r").read().split(",")
+    inputs = open("inputs/day-four.txt", "r").read().split("\n")
+    drawnNumbersInput = inputs[0].split(",")
+    boardInputs = inputs[1:len(inputs)]
 
     loose = 0
     bingoBoards = GetBingoBoards(boardInputs)
