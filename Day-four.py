@@ -3,15 +3,15 @@ def main():
     drawnNumbersInput = inputs[0].split(",")
     boardInputs = inputs[1:len(inputs)]
 
-    loose = 0
+    win = True
     bingoBoards = GetBingoBoards(boardInputs)
-    winningBoard, drawnNumber = PlayBingo(bingoBoards, drawnNumbersInput, loose)
+    winningBoard, drawnNumber = PlayBingo(bingoBoards, drawnNumbersInput, win)
     allNumbersCombined = GetCombinedNumbers(winningBoard)
 
     print(allNumbersCombined * int(drawnNumber))
 
-    loose = 1
-    loosingBoard, drawnNumber = PlayBingo(bingoBoards, drawnNumbersInput, loose)
+    win = False
+    loosingBoard, drawnNumber = PlayBingo(bingoBoards, drawnNumbersInput, win)
     allNumbersCombined = GetCombinedNumbers(loosingBoard)
 
     print(allNumbersCombined * int(drawnNumber))
@@ -56,19 +56,19 @@ def GetBingoBoards(boardsInput):
     return bingoBoards
 
 
-def PlayBingo(boards, drawnNumbers, loose):
+def PlayBingo(boards, drawnNumbers, win):
     for number in drawnNumbers:
         MarkNumberOnBingoBoards(number, boards)
 
-        if (loose == 0):
+        if win:
             winningBoard = GetWinningBoard(boards)
-            if (winningBoard == ""):
+            if not winningBoard:
                 continue
             return winningBoard, number
 
-        if (loose == 1):
+        if not win:
             loosingBoard = GetLoosingBoard(boards)
-            if (loosingBoard == ""):
+            if not loosingBoard:
                 continue
             return loosingBoard, number
 
@@ -80,7 +80,7 @@ def MarkNumberOnBingoBoards(number, bingoBoards):
 
 def GetWinningBoard(bingoBoards):
     for board in bingoBoards:
-        if (board.HasWon() == 1):
+        if board.HasWon():
             return board
     return ""
 
@@ -90,7 +90,7 @@ def GetLoosingBoard(bingoBoards):
     winningBoard = []
 
     for board in loosingBoards:
-        if (board.HasWon() == 1):
+        if board.HasWon():
             winningBoard.append(board)
             loosingBoards.remove(board)
     if (len(winningBoard) == 1) and (len(loosingBoards) == 0):
@@ -140,16 +140,16 @@ class BingoBoard:
 
     def HasWon(self):
         for row in self.GetAllRows():
-            if RowHasWon(row) == 1:
-                return 1
+            if RowHasWon(row):
+                return True
 
         columnToCheck = 0
         while columnToCheck < 5:
             if ColumnHasWon(self.firstRow[columnToCheck], self.secondRow[columnToCheck], self.thirdRow[columnToCheck], self.fourthRow[columnToCheck], self.fifthRow[columnToCheck]) == 1:
-                return 1
+                return True
             columnToCheck += 1
 
-        return 0
+        return False
 
 
 def MarkRow(row, drawnNumber):
@@ -164,15 +164,15 @@ def RowHasWon(row):
     for i in row:
         markedNumbers += i
     if markedNumbers == "":
-        return 1
-    return 0
+        return True
+    return False
 
 
 def ColumnHasWon(firstRowNumber, secondRowNumber, thirdRowNumber, fourthRowNumber, fifthRowNumber):
     markedNumbers = firstRowNumber + secondRowNumber + thirdRowNumber + fourthRowNumber + fifthRowNumber
     if markedNumbers == "":
-        return 1
-    return 0
+        return True
+    return False
 
 
 if __name__ == "__main__":
