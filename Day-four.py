@@ -3,8 +3,9 @@ def main():
     drawnNumbersInput = inputs[0].split(",")
     boardInputs = inputs[1:len(inputs)]
 
-    win = True
     bingoBoards = GetBingoBoards(boardInputs)
+
+    win = True
     winningBoard, drawnNumber = PlayBingo(bingoBoards, drawnNumbersInput, win)
     allNumbersCombined = GetCombinedNumbers(winningBoard)
 
