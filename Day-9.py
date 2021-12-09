@@ -30,39 +30,32 @@ def main():
         number = int(positions[i])
         xposition = i[0]
         yposition = i[1]
-        moveRight = xposition + 1, yposition
-        moveLeft = xposition - 1, yposition
-        moveDown = xposition, yposition + 1
-        moveUp = xposition, yposition - 1
+        right = xposition + 1, yposition
+        left = xposition - 1, yposition
+        down = xposition, yposition + 1
+        up = xposition, yposition - 1
 
         if xposition == 0:
             if yposition == 0:
-                adjacentNumbers = int(positions[moveDown]), int(positions[moveRight])
+                adjacentNumbers = GetNumbers(positions, (down, right))
             if yposition > 0 and yposition < numberOfRows - 1:
-                adjacentNumbers = int(positions[moveDown]), int(
-                    positions[moveRight]), int(positions[moveUp])
+                adjacentNumbers = GetNumbers(positions, (down, right, up))
             if yposition == numberOfRows - 1:
-                adjacentNumbers = int(positions[moveRight]), int(
-                    positions[moveUp])
+                adjacentNumbers = GetNumbers(positions, (right, up))
         elif xposition > 0 and xposition < maxLengthOfRow:
             if yposition == 0:
-                adjacentNumbers = int(positions[moveDown]), int(
-                    positions[moveRight]), int(positions[moveLeft])
+                adjacentNumbers = GetNumbers(positions, (down, right, left))
             elif yposition > 0 and yposition < numberOfRows - 1:
-                adjacentNumbers = int(positions[moveUp]), int(positions[moveRight]), int(
-                    positions[moveLeft]), int(positions[moveDown])
+                adjacentNumbers = GetNumbers(positions, (up, right, left, down))
             elif xposition < maxLengthOfRow and yposition == numberOfRows - 1:
-                adjacentNumbers = int(positions[moveRight]), int(
-                    positions[moveLeft]), int(positions[moveUp])
+                adjacentNumbers = GetNumbers(positions, (right, left, up))
         elif xposition == maxLengthOfRow:
             if yposition == 0:
-                adjacentNumbers = int(
-                    positions[moveDown]), int(positions[moveLeft])
+                adjacentNumbers = GetNumbers(positions, (down,left))
             if yposition > 0 and yposition < numberOfRows - 1:
-                adjacentNumbers = int(positions[moveDown]), int(positions[moveLeft]), int(positions[moveUp])
+                adjacentNumbers = GetNumbers(positions, (down,left,up))
             elif yposition == numberOfRows - 1:
-                adjacentNumbers = int(
-                    positions[moveLeft]), int(positions[moveUp])
+                adjacentNumbers = GetNumbers(positions, (left, up))
 
         if any(adjacentNumbers):
             smaller = False
@@ -77,6 +70,11 @@ def main():
 
     print(totalSum)
 
+def GetNumbers(positions, directions):
+    adjacentNumbers = []
+    for i in directions:
+        adjacentNumbers.append(int(positions[i]))
+    return adjacentNumbers 
 
 if __name__ == "__main__":
     main()
