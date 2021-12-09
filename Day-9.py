@@ -30,41 +30,41 @@ def main():
         number = int(positions[i])
         xposition = i[0]
         yposition = i[1]
-        moveForward = xposition + 1
-        moveBackward = xposition - 1
+        moveRight = xposition + 1
+        moveLeft = xposition - 1
         moveDown = yposition + 1
         moveUp = yposition - 1
 
         if xposition == 0:
             if yposition == 0:
                 adjacentNumbers = int(positions[xposition, moveDown]), int(
-                    positions[moveForward, yposition])
+                    positions[moveRight, yposition])
             if yposition > 0 and yposition < numberOfRows - 1:
                 adjacentNumbers = int(positions[xposition, moveDown]), int(
-                    positions[moveForward, yposition]), int(positions[xposition, moveUp])
+                    positions[moveRight, yposition]), int(positions[xposition, moveUp])
             if yposition == numberOfRows - 1:
-                adjacentNumbers = int(positions[moveForward, yposition]), int(
+                adjacentNumbers = int(positions[moveRight, yposition]), int(
                     positions[xposition, moveUp])
         elif xposition > 0 and xposition < maxLengthOfRow:
             if yposition == 0:
                 adjacentNumbers = int(positions[xposition, moveDown]), int(
-                    positions[moveForward, yposition]), int(positions[moveBackward, yposition])
+                    positions[moveRight, yposition]), int(positions[moveLeft, yposition])
             elif yposition > 0 and yposition < numberOfRows - 1:
-                adjacentNumbers = int(positions[xposition, moveDown]), int(positions[moveForward, yposition]), int(
-                    positions[moveBackward, yposition]), int(positions[xposition, (yposition-1)])
+                adjacentNumbers = int(positions[xposition, moveDown]), int(positions[moveRight, yposition]), int(
+                    positions[moveLeft, yposition]), int(positions[xposition, (yposition-1)])
             elif xposition < maxLengthOfRow and yposition == numberOfRows - 1:
-                adjacentNumbers = int(positions[moveForward, yposition]), int(
-                    positions[moveBackward, yposition]), int(positions[xposition, (yposition-1)])
+                adjacentNumbers = int(positions[moveRight, yposition]), int(
+                    positions[moveLeft, yposition]), int(positions[xposition, (yposition-1)])
         elif xposition == maxLengthOfRow:
             if yposition == 0:
                 adjacentNumbers = int(
-                    positions[xposition, moveDown]), int(positions[moveBackward, yposition])
+                    positions[xposition, moveDown]), int(positions[moveLeft, yposition])
             if yposition > 0 and yposition < numberOfRows - 1:
                 adjacentNumbers = int(positions[xposition, moveDown]), int(
-                    positions[moveBackward, yposition]), int(positions[xposition, moveUp])
+                    positions[moveLeft, yposition]), int(positions[xposition, moveUp])
             elif yposition == numberOfRows - 1:
                 adjacentNumbers = int(
-                    positions[moveBackward, yposition]), int(positions[xposition, moveUp])
+                    positions[moveLeft, yposition]), int(positions[xposition, moveUp])
 
         if any(adjacentNumbers):
             smaller = False
