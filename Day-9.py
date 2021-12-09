@@ -6,7 +6,6 @@ def main():
 
     # this is a list of numbers, new line for each row of numbers
 
-
     positions = {}
     county = 0
 
@@ -24,95 +23,56 @@ def main():
 
         county += 1
 
-    numberOfRows -= 1
-    
-    leastNumbers = []
-
-    # (0, 0): 2
-    # (0, 1): 1
-
     adjacentNumbers = []
+    totalSum = 0
 
     for i in positions:
         number = int(positions[i])
         xposition = i[0]
         yposition = i[1]
-    
-        test1 = 0
-        count = 0
 
-        if xposition == 0 and yposition == 0:
-            adjacentNumber1 = int(positions[xposition, (yposition + 1)])
-            adjacentNumber2 = int(positions[(xposition + 1), yposition])
+        if xposition == 0:
+            if yposition == 0:
+                adjacentNumbers = int(
+                    positions[xposition, (yposition + 1)]), int(positions[(xposition + 1), yposition])
+            if yposition > 0 and yposition < numberOfRows - 1:
+                adjacentNumbers = int(positions[xposition, (yposition + 1)]), int(
+                    positions[(xposition + 1), yposition]), int(positions[xposition, (yposition - 1)])
+            if yposition == numberOfRows - 1:
+                adjacentNumbers = int(
+                    positions[(xposition + 1), yposition]), int(positions[xposition, (yposition - 1)])
+        elif xposition > 0 and xposition < maxLengthOfRow:
+            if yposition == 0:
+                adjacentNumbers = int(positions[xposition, (yposition + 1)]), int(
+                    positions[(xposition + 1), yposition]), int(positions[(xposition - 1), yposition])
+            elif yposition > 0 and yposition < numberOfRows - 1:
+                adjacentNumbers = int(positions[xposition, (yposition + 1)]), int(positions[(xposition + 1), yposition]), int(
+                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition-1)])
+            elif xposition < maxLengthOfRow and yposition == numberOfRows - 1:
+                adjacentNumbers = int(positions[(xposition + 1), yposition]), int(
+                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition-1)])
+        elif xposition == maxLengthOfRow:
+            if yposition == 0:
+                adjacentNumbers = int(
+                    positions[xposition, yposition + 1]), int(positions[(xposition - 1), yposition])
+            if yposition > 0 and yposition < numberOfRows - 1:
+                adjacentNumbers = int(positions[xposition, yposition + 1]), int(
+                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition - 1)])
+            elif yposition == numberOfRows - 1:
+                adjacentNumbers = int(
+                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition - 1)])
 
-            if number < adjacentNumber1 and number < adjacentNumber2:
-                adjacentNumbers.append(number)
+        if any(adjacentNumbers):
+            smaller = False
+            for i in adjacentNumbers:
+                if number > i:
+                    smaller = False
+                    break
+                elif number < i:
+                    smaller = True
+            if smaller:
+                totalSum += number + 1
 
-        elif xposition > 0 and yposition == 0 and xposition < maxLengthOfRow:
-            adjacentNumber1 = int(positions[xposition, (yposition + 1)])
-            adjacentNumber2 = int(positions[(xposition + 1), yposition])
-            adjacentNumber3 = int(positions[(xposition - 1), yposition])
-            if number < adjacentNumber1 and number < adjacentNumber2 and number < adjacentNumber3:
-                adjacentNumbers.append(number)
-            # add
-
-        elif (xposition == maxLengthOfRow and yposition == 0):
-            adjacentNumber1 = int(positions[xposition, yposition + 1])
-            adjacentNumber2 = int(positions[(xposition - 1), yposition])
-
-            if number < adjacentNumber1 and number < adjacentNumber2:
-                adjacentNumbers.append(number)
-
-        elif xposition == 0 and yposition > 0 and yposition < numberOfRows:
-            adjacentNumber1 = int(positions[xposition, (yposition + 1)])
-            adjacentNumber2 = int(positions[(xposition + 1), yposition])
-            adjacentNumber3 = int(positions[xposition, (yposition - 1)])
-
-            if number < adjacentNumber1 and number < adjacentNumber2 and number < adjacentNumber3:
-                adjacentNumbers.append(number)
-
-        elif xposition > 0 and yposition > 0 and xposition < maxLengthOfRow and yposition < numberOfRows:
-            adjacentNumber1 = int(positions[xposition, (yposition + 1)])
-            adjacentNumber2 = int(positions[(xposition + 1), yposition])
-            adjacentNumber3 = int(positions[(xposition - 1), yposition])
-            adjacentNumber4 = int(positions[xposition, (yposition-1)])
-            if number < adjacentNumber1 and number < adjacentNumber2 and number < adjacentNumber3 and number < adjacentNumber4:
-                adjacentNumbers.append(number)
-            # add
-
-        elif (xposition == maxLengthOfRow and yposition > 0 and yposition < numberOfRows):
-            adjacentNumber1 = int(positions[xposition, yposition + 1])
-            adjacentNumber2 = int(positions[(xposition - 1), yposition])
-            adjacentNumber3 = int(positions[xposition, (yposition - 1)])
-            
-            if number < adjacentNumber1 and number < adjacentNumber2 and number < adjacentNumber3:
-                adjacentNumbers.append(number)
-            
-        elif xposition == 0 and yposition == numberOfRows:
-            adjacentNumber2 = int(positions[(xposition + 1), yposition])
-            adjacentNumber3 = int(positions[xposition, (yposition - 1)])
-
-            if number < adjacentNumber2 and number < adjacentNumber3:
-                adjacentNumbers.append(number)
-
-        elif xposition > 0 and xposition < maxLengthOfRow and yposition == numberOfRows:
-            adjacentNumber2 = int(positions[(xposition + 1), yposition])
-            adjacentNumber3 = int(positions[(xposition - 1), yposition])
-            adjacentNumber4 = int(positions[xposition, (yposition-1)])
-            if number < adjacentNumber2 and number < adjacentNumber3 and number < adjacentNumber4:
-                adjacentNumbers.append(number)
-            # add
-
-        elif (xposition == maxLengthOfRow and yposition == numberOfRows):
-            adjacentNumber2 = int(positions[(xposition - 1), yposition])
-            adjacentNumber3 = int(positions[xposition, (yposition - 1)])
-            
-            if number < adjacentNumber2 and number < adjacentNumber3:
-                adjacentNumbers.append(number)
-
-
-    totalSum = sum([i + 1 for i in adjacentNumbers])
-    
     print(totalSum)
 
 
