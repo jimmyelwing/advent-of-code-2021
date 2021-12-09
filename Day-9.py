@@ -4,8 +4,6 @@ def main():
 
     inputs = open("inputs/day-9.txt", "r").read().split("\n")
 
-    # this is a list of numbers, new line for each row of numbers
-
     positions = {}
     county = 0
 
@@ -33,34 +31,42 @@ def main():
 
         if xposition == 0:
             if yposition == 0:
-                adjacentNumbers = int(
-                    positions[xposition, (yposition + 1)]), int(positions[(xposition + 1), yposition])
+                adjacentNumbers = int(positions[xposition, (yposition + 1)]),
+                int(positions[(xposition + 1), yposition])
             if yposition > 0 and yposition < numberOfRows - 1:
-                adjacentNumbers = int(positions[xposition, (yposition + 1)]), int(
-                    positions[(xposition + 1), yposition]), int(positions[xposition, (yposition - 1)])
+                adjacentNumbers = int(positions[xposition, (yposition + 1)]),
+                int(positions[(xposition + 1), yposition]),
+                int(positions[xposition, (yposition - 1)])
             if yposition == numberOfRows - 1:
-                adjacentNumbers = int(
-                    positions[(xposition + 1), yposition]), int(positions[xposition, (yposition - 1)])
+                adjacentNumbers = int(positions[(xposition + 1), yposition]),
+                int(positions[xposition, (yposition - 1)])
+
         elif xposition > 0 and xposition < maxLengthOfRow:
             if yposition == 0:
-                adjacentNumbers = int(positions[xposition, (yposition + 1)]), int(
-                    positions[(xposition + 1), yposition]), int(positions[(xposition - 1), yposition])
+                adjacentNumbers = int(positions[xposition, (yposition + 1)]),
+                int(positions[(xposition + 1), yposition]),
+                int(positions[(xposition - 1), yposition])
             elif yposition > 0 and yposition < numberOfRows - 1:
-                adjacentNumbers = int(positions[xposition, (yposition + 1)]), int(positions[(xposition + 1), yposition]), int(
-                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition-1)])
+                adjacentNumbers = int(positions[xposition, (yposition + 1)]),
+                int(positions[(xposition + 1), yposition]),
+                int(positions[(xposition - 1), yposition]),
+                int(positions[xposition, (yposition-1)])
             elif xposition < maxLengthOfRow and yposition == numberOfRows - 1:
-                adjacentNumbers = int(positions[(xposition + 1), yposition]), int(
-                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition-1)])
+                adjacentNumbers = int(positions[(xposition + 1), yposition]),
+                int(positions[(xposition - 1), yposition]),
+                int(positions[xposition, (yposition-1)])
+
         elif xposition == maxLengthOfRow:
             if yposition == 0:
-                adjacentNumbers = int(
-                    positions[xposition, yposition + 1]), int(positions[(xposition - 1), yposition])
+                adjacentNumbers = int(positions[xposition, yposition + 1]),
+                int(positions[(xposition - 1), yposition])
             if yposition > 0 and yposition < numberOfRows - 1:
-                adjacentNumbers = int(positions[xposition, yposition + 1]), int(
-                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition - 1)])
+                adjacentNumbers = int(positions[xposition, yposition + 1]),
+                int(positions[(xposition - 1), yposition]),
+                int(positions[xposition, (yposition - 1)])
             elif yposition == numberOfRows - 1:
-                adjacentNumbers = int(
-                    positions[(xposition - 1), yposition]), int(positions[xposition, (yposition - 1)])
+                adjacentNumbers = int(positions[(xposition - 1), yposition]),
+                int(positions[xposition, (yposition - 1)])
 
         if any(adjacentNumbers):
             smaller = False
