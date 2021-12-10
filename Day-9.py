@@ -1,84 +1,153 @@
 def main():
-    inputs = "2199943210\n3987894921\n9856789892\n8767896789\n9899965678"
-    inputs = inputs.split("\n")
+    # inputs = "2199943210\n3987894921\n9856789892\n8767896789\n9899965678"
+    # inputs = inputs.split("\n")
 
     inputs = open("inputs/day-9.txt", "r").read().split("\n")
 
-    print(PartOne(inputs))
+    print(PartOne(inputs))  # 15 / 417
+    print(PartTwo(inputs))  # 1134 / 1148965
 
-def PartOne(inputs):
 
-    positions = GetPositionsFromInputs(inputs)
-    numberOfColumns, numberOfRows = max(positions)
+def PartOne(heightMap):
+    heightMap = AddPositionsToHeightMap(heightMap)
+    lowPoints = GetLowPoints(heightMap)
+    return RiskLevel(lowPoints)
 
-    adjacentNumbers = []
-    totalSum = 0
 
-    for position in positions:
-        number = int(positions[position])
-        x,y = position
-    
-        right = x + 1, y
-        left = x - 1, y
-        down = x, y + 1
-        up = x, y - 1
+def PartTwo(heightMap):
+    heightMap = AddPositionsToHeightMap(heightMap)
+    basins = GetBasins(heightMap)
+    sortedBasins = sorted(basins, key=len)
 
-        if FirstColumn(x):
-            if FirstRow(y):
-                adjacentNumbers = GetNumbers(positions, (down, right))
-            elif MiddleRow(y, numberOfRows):
-                adjacentNumbers = GetNumbers(positions, (down, right, up))
-            elif LastRow(y, numberOfRows):
-                adjacentNumbers = GetNumbers(positions, (right, up))
-        elif MiddleColumn(x, numberOfColumns):
-            if FirstRow(y):
-                adjacentNumbers = GetNumbers(positions, (down, right, left))
-            elif MiddleRow(y, numberOfRows):
-                adjacentNumbers = GetNumbers(
-                    positions, (up, right, left, down))
-            elif LastRow(y, numberOfRows):
-                adjacentNumbers = GetNumbers(positions, (right, left, up))
-        elif LastColumn(x, numberOfColumns):
-            if FirstRow(y):
-                adjacentNumbers = GetNumbers(positions, (down, left))
-            elif MiddleRow(y, numberOfRows):
-                adjacentNumbers = GetNumbers(positions, (down, left, up))
-            elif LastRow(y, numberOfRows):
-                adjacentNumbers = GetNumbers(positions, (left, up))
+    return len(sortedBasins[-1]) * len(sortedBasins[-2]) * len(sortedBasins[-3])
 
-        if any(adjacentNumbers):
-            smaller = False
-            for i in adjacentNumbers:
-                if number > i:
-                    smaller = False
-                    break
-                elif number < i:
-                    smaller = True
-            if smaller:
-                totalSum += number + 1
 
-    return totalSum
+def AddPositionsToHeightMap(heightMap):
+    heightMapWithPositions = {}
+    countRow = 0
+    for row in heightMap:
+        heightMapWithPositions.update(GetPositionsOfRow(row, countRow))
+        countRow += 1
+    return heightMapWithPositions
 
-def GetPositionsFromInputs(inputs):
+
+def GetPositionsOfRow(row, rowNumber):
     positions = {}
-    county = 0
-    for row in inputs:
-        countx = 0
-        for number in row:
-            x = countx
-            y = county
-            positions[x, y] = number
-            countx += 1
-        county += 1
-        
+    countx = 0
+    for number in row:
+        x = countx
+        positions[x, rowNumber] = int(number)
+        countx += 1
     return positions
 
 
-def GetNumbers(positions, directions):
-    adjacentNumbers = []
-    for i in directions:
-        adjacentNumbers.append(int(positions[i]))
-    return adjacentNumbers
+def GetLowPoints(heightMap):
+    lowPoints = []
+
+    for location in heightMap:
+        locationHeight = int(heightMap[location])
+
+        adjacentLocations = GetAdjacentLocations(location, heightMap)
+        if any(adjacentLocations):
+            locationIsLower = False
+            for adjacentHeight in adjacentLocations.values():
+                if locationHeight > adjacentHeight:
+                    locationIsLower = False
+                    break
+                elif locationHeight < adjacentHeight:
+                    locationIsLower = True
+            if locationIsLower:
+                lowPoints.append(locationHeight)
+
+    return lowPoints
+
+
+def GetBasins(heightMap):
+    uniqueBasins = []
+    basins = {}
+    locationsToCheck = {}
+    locationsAlreadyAdded = {}
+    for location in heightMap:
+        height = heightMap[location]
+        if height == 9:
+            continue
+        adjacentLocations = GetAdjacentLocations(location, heightMap)
+        locationsToCheck.update(GetLocationsToCheck(
+            heightMap, locationsAlreadyAdded, adjacentLocations))
+        if any(locationsToCheck):
+            basins[location] = height
+            locationsAlreadyAdded[location] = height
+
+        while any(locationsToCheck):
+            for location in list(locationsToCheck):
+                height = heightMap[location]
+                adjacentLocations = GetAdjacentLocations(location, heightMap)
+                locationsToCheck.update(GetLocationsToCheck(
+                    heightMap, locationsAlreadyAdded, adjacentLocations))
+                basins[location] = heightMap[location]
+                locationsAlreadyAdded[location] = heightMap[location]
+                locationsToCheck.pop(location)
+
+        if any(basins):
+            uniqueBasins.append(list(basins))
+        basins.clear()
+
+    return uniqueBasins
+
+
+def GetAdjacentLocations(location, heightMap):
+    adjacentLocations = {}
+    numberOfColumns, numberOfRows = max(heightMap)
+
+    x, y = location
+    right = x + 1, y
+    left = x - 1, y
+    down = x, y + 1
+    up = x, y - 1
+
+    if FirstColumn(x):
+        if FirstRow(y):
+            adjacentLocations = GetLocations(heightMap, (down, right))
+        elif MiddleRow(y, numberOfRows):
+            adjacentLocations = GetLocations(heightMap, (down, right, up))
+        elif LastRow(y, numberOfRows):
+            adjacentLocations = GetLocations(heightMap, (right, up))
+    elif MiddleColumn(x, numberOfColumns):
+        if FirstRow(y):
+            adjacentLocations = GetLocations(heightMap, (down, right, left))
+        elif MiddleRow(y, numberOfRows):
+            adjacentLocations = GetLocations(heightMap, (up, right, left, down))
+        elif LastRow(y, numberOfRows):
+            adjacentLocations = GetLocations(heightMap, (right, left, up))
+    elif LastColumn(x, numberOfColumns):
+        if FirstRow(y):
+            adjacentLocations = GetLocations(heightMap, (down, left))
+        elif MiddleRow(y, numberOfRows):
+            adjacentLocations = GetLocations(heightMap, (down, left, up))
+        elif LastRow(y, numberOfRows):
+            adjacentLocations = GetLocations(heightMap, (left, up))
+
+    return adjacentLocations
+
+
+def GetLocations(heightMap, positions):
+    locations = {}
+    for i in positions:
+        locations[i] = heightMap[i]
+    return locations
+
+
+def RiskLevel(lowPoints):
+    return sum([i + 1 for i in lowPoints])
+
+
+def GetLocationsToCheck(heightMap, locationsAlreadyAdded, adjacentLocations):
+    locationsToCheck = {}
+    for adjacentLocation in adjacentLocations:
+        adjacentHeight = heightMap[adjacentLocation]
+        if adjacentHeight != 9 and adjacentLocation not in locationsAlreadyAdded:
+            locationsToCheck[adjacentLocation] = adjacentHeight
+    return locationsToCheck
 
 
 def FirstRow(y):
