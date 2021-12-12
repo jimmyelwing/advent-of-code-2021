@@ -1,3 +1,5 @@
+import collections
+
 def main():
 
     # inputs = "5483143223\n2745854711\n5264556173\n6141336146\n6357385478\n4167524645\n2176841721\n6882881134\n4846848554\n5283751526"
@@ -6,59 +8,65 @@ def main():
     inputs = open("inputs/day-11.txt", "r").read()
     rows = inputs.split("\n")
     
-    countRow = 0
-    octopuses = {}
-    for row in rows:
-        countColumn = 0
-        positions = {}
-        for octopus in row:
-            x = countColumn
-            positions[x, countRow] = int(octopus)
-            countColumn += 1
-        octopuses.update(positions)
-        countRow += 1
-
-    # increase energy level by one of each octopus
+    octopi = GetOctopiFromRows(rows)
 
     count = 0
-    allOctopusesFlashing = 0
+    numberOfRunsWhenAllOctopiIsFlashing = 0
     flashesAt100Steps = 0
     flashes = 0
     run = True
     
     while run:
-        for i in octopuses:
-            octopuses[i] += 1
+        for octopus in octopi:
+            IncreaseEnergyByOne(octopi, octopus)
             
-        octopusesWithNineOrHigher = [i for i in octopuses if octopuses[i] > 9]
-        while octopusesWithNineOrHigher:
-            for x in list(octopusesWithNineOrHigher):
-                adjacentLocations = GetAdjacentLocationsIncludingDiagonal(x, octopuses)
-                for y in adjacentLocations:
-                    energyLevel = octopuses[y]
+        octopiWithHighEnergy = [octopus for octopus in octopi if octopi[octopus] > 9]
+        while octopiWithHighEnergy:
+            for highEnergyOctopus in list(octopiWithHighEnergy):
+                adjacentOctopi = GetAdjacentLocationsIncludingDiagonal(highEnergyOctopus, octopi)
+                for adjacentOctopus in adjacentOctopi:
+                    energyLevel = octopi[adjacentOctopus]
                     if energyLevel != 0:
-                        octopuses[y] += 1
-                        energyLevel = octopuses[y]
-                        if energyLevel > 9 and y not in octopusesWithNineOrHigher:
-                            octopusesWithNineOrHigher.append(y)
-                octopuses[x] = 0
+                        IncreaseEnergyByOne(octopi, adjacentOctopus)
+                        energyLevel = octopi[adjacentOctopus]
+                        if energyLevel > 9 and adjacentOctopus not in octopiWithHighEnergy:
+                            octopiWithHighEnergy.append(adjacentOctopus)
+                octopi[highEnergyOctopus] = 0
                 flashes += 1
-                octopusesWithNineOrHigher = [i for i in octopuses if octopuses[i] > 9]
-        
-        octopusesFlashing = [i for i in octopuses if octopuses[i] == 0]
-        if len(octopusesFlashing) == len(octopuses):
-            run = False
-            allOctopusesFlashing = count + 1
-            
+                octopiWithHighEnergy = [i for i in octopi if octopi[i] > 9]
+
+
         count += 1
+        
         if count == 100:
             flashesAt100Steps = flashes
-        
-
+        if AllOctopiIsFlashing(octopi):
+            run = False
+            numberOfRunsWhenAllOctopiIsFlashing = count
+            
     print(flashesAt100Steps) # 1617
-    print(allOctopusesFlashing) # 258
-    
+    print(numberOfRunsWhenAllOctopiIsFlashing) # 258
 
+def GetOctopiFromRows(rows):
+    countRow = 0
+    octopi = {}
+    for row in rows:
+        countColumn = 0
+        positions = {}
+        for octopus in row:
+            highEnergyOctopus = countColumn
+            positions[highEnergyOctopus, countRow] = int(octopus)
+            countColumn += 1
+        octopi.update(positions)
+        countRow += 1
+    return octopi
+    
+def IncreaseEnergyByOne(octopi, octopus):
+    octopi[octopus] += 1
+    
+def AllOctopiIsFlashing(octopi):
+    flashingOctopi = [i for i in octopi if octopi[i] == 0]
+    return len(flashingOctopi) == len(octopi)
 
 def GetAdjacentLocationsIncludingDiagonal(location, heightMap):
     adjacentLocations = {}
