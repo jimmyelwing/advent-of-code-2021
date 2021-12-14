@@ -14,8 +14,6 @@ def PartOne(inputs) -> int:
     polymeterTemplate, *pairInsertions = inputs.splitlines()
     pairInsertions = list(filter(None, pairInsertions))
     
-    newLongString = polymeterTemplate
-    position = 0
     count = 0
     string = polymeterTemplate
     while count < 10:
@@ -49,7 +47,6 @@ def GetString(polymeterTemplate, pairInsertions) -> str:
                 else:
                     newString += insert + letters[-1]
                 string = newString
-            test = 0
         newPosition += 1
     
     return string
